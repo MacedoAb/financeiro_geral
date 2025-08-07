@@ -3,6 +3,8 @@
 require_once("../conexao.php");
 require_once("verificar.php");
 
+$data_atual = date('Y-m-d');
+
 $pag_inicial = 'home';
 if(@$_SESSION['nivel'] != 'Administrador'){
 	require_once("verificar_permissoes.php");

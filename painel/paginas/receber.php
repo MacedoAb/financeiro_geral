@@ -48,12 +48,12 @@ if(@$receber == 'ocultar'){
 				
 
 					<div class="row">
-						<div class="col-md-8">							
+						<div class="col-md-7">							
 								<label>Descrição</label>
-								<input type="text" class="form-control" id="nome" name="nome" placeholder="Seu Nome" required>							
+								<input type="text" class="form-control" id="descricao" name="descricao" placeholder="Descreva sobre o recebimento" >							
 						</div>
 
-						<div class="col-md-4">							
+						<div class="col-md-5">							
 								<label>Cliente</label>
 								<select name="cliente" id="cliente" class="sel2" style="width:100%">
 									<option value="0">Nenhum</option>
@@ -68,30 +68,45 @@ if(@$receber == 'ocultar'){
 
 					<div class="row">
 
-						<div class="col-md-6">							
-								<label>Telefone</label>
-								<input type="text" class="form-control" id="telefone" name="telefone" placeholder="Seu Telefone" required>							
+						<div class="col-md-3">							
+								<label>Valor</label>
+								<input type="text" class="form-control" id="valor" name="valor" placeholder="" required>							
 						</div>
 						
 
-						<div class="col-md-6">							
-								<label>Nível</label>
-								<select class="form-control" name="nivel" id="nivel">
-								  <option>Administrador</option>
-								  <option>Comum</option>
-								</select>							
+						<div class="col-md-3">							
+								<label>Vencimento</label>
+								<input type="date" class="form-control" id="vencimento" name="vencimento"
+								value="<?php $data_atual ?>">							
 						</div>
 
+						<div class="col-md-3">							
+								<label>Pago em</label>
+								<input type="date" class="form-control" id="data_pgto" name="data_pgto"
+								value="">							
+						</div>
+
+						<div class="col-md-3">							
+								<label>Forma Pgto</label>
+								<select name="forma_pgto" id="forma_pgto" class="form-control">
+									<option value="0">Nenhum</option>
+									<option value="1">Cliente 1</option>
+									<option value="2">Cliente 2</option>
+								</select>							
+						</div>
 
 						
 					</div>
 
 					<div class="row">
 
-						<div class="col-md-12">							
-								<label>Endereço</label>
-								<input type="text" class="form-control" id="endereco" name="endereco" placeholder="Seu Endereço" >							
-						</div>
+						<div class="col-md-3">							
+								<label>Frequência</label>
+								<select name="frequencia" id="frequencia" class="form-control">
+									<option value="0">Nenhum</option>
+									<option value="1">Cliente 1</option>
+									<option value="2">Cliente 2</option>
+								</select>	
 					</div>
 
 					
