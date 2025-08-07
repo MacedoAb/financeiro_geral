@@ -120,7 +120,25 @@ if($linhas > 0){
 
 <link rel="stylesheet" type="text/css" href="DataTables/datatables.min.css"/> <script src="DataTables/datatables.min.js"></script>
 
-	
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<style type="text/css">
+		.select2-selection__rendered {
+			line-height: 35px !important;
+			font-size:16px !important;
+			color:#666666 !important;
+
+		}
+
+		.select2-selection {
+			height: 35px !important;
+			font-size:16px !important;
+			color:#666666 !important;
+
+		}
+</style> 
+
 </head> 
 <body class="cbp-spmenu-push">
 	<div class="main-content">
@@ -140,36 +158,52 @@ if($linhas > 0){
 					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" >
 						<ul class="sidebar-menu">
 							<li class="header">MENU NAVEGAÇÃO</li>
-							<li class="treeview <?php echo $home ?>">
+							<li class="treeview <?php echo @$home ?>">
 								<a href="index.php">
 									<i class="fa fa-home"></i> <span>Home</span>
 								</a>
 							</li>
-							<li class="treeview <?php echo $menu_pessoas ?>">
+							<li class="treeview <?php echo @$menu_pessoas ?>">
 								<a href="#">
 									<i class="fa fa-users"></i>
 									<span>Pessoas</span>
 									<i class="fa fa-angle-left pull-right"></i>
 								</a>
 								<ul class="treeview-menu">
-									<li class="<?php echo $usuarios ?>"><a href="usuarios"><i class="fa fa-file-text"></i> Usuários</a></li>
+									<li class="<?php echo @$usuarios ?>"><a href="usuarios"><i class="fa fa-file-text"></i> Usuários</a></li>
 									
 								</ul>
 							</li>
 
-							<li class="treeview <?php echo $menu_cadastros ?>">
+							<li class="treeview <?php echo @$menu_cadastros ?>">
 								<a href="#">
 									<i class="fa fa-folder"></i>
 									<span>Cadastros</span>
 									<i class="fa fa-angle-left pull-right"></i>
 								</a>
 								<ul class="treeview-menu">
-									<li class="<?php echo $grupo_acessos ?>"><a href="grupo_acessos"><i class="fa fa-angle-right"></i> Grupos</a></li>
+									<li class="<?php echo @$grupo_acessos ?>"><a href="grupo_acessos">
+										<i class="fa fa-angle-right"></i> Grupos</a></li>
 
-									<li class="<?php echo $acessos ?>"><a href="acessos"><i class="fa fa-angle-right"></i> Acessos</a></li>
+									<li class="<?php echo @$acessos ?>"><a href="acessos">
+										<i class="fa fa-angle-right"></i> Acessos</a></li>
 									
 								</ul>
 							</li>
+
+							<li class="treeview <?php echo @$menu_financeiro ?>">
+								<a href="#">
+									<i class="fa fa-dollar"></i>
+									<span>Financeiro</span>
+									<i class="fa fa-angle-left pull-right"></i>
+								</a>
+								<ul class="treeview-menu">
+									<li class="<?php echo $receber ?>"><a href="receber">
+										<i class="fa fa-angle-right"></i> Receber</a></li>
+									
+								</ul>
+							</li>
+
 
 						</ul>
 					</div>
