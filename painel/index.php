@@ -184,6 +184,13 @@ if($linhas > 0){
 									<i class="fa fa-angle-left pull-right"></i>
 								</a>
 								<ul class="treeview-menu">
+
+									<li class="<?php echo @$formas_pgto ?>"><a href="formas_pgto">
+										<i class="fa fa-angle-right"></i> Formas Pgto</a></li>
+
+									<li class="<?php echo @$frequencias ?>"><a href="frequencias">
+										<i class="fa fa-angle-right"></i> Frequências</a></li>
+
 									<li class="<?php echo @$grupo_acessos ?>"><a href="grupo_acessos">
 										<i class="fa fa-angle-right"></i> Grupos</a></li>
 
@@ -470,10 +477,8 @@ if($linhas > 0){
 						</div>
 
 						<div class="col-md-4">								
-							<img src="images/perfil/<?php echo $foto_usuario ?>"  width="80px" id="target-usu">								
-							
+							<img src="images/perfil/<?php echo $foto_usuario ?>"  width="80px" id="target-usu">							
 						</div>
-
 						
 					</div>
 

@@ -48,9 +48,14 @@ if(@$receber == 'ocultar'){
 				
 
 					<div class="row">
-						<div class="col-md-7">							
+						<div class="col-md-5">							
 								<label>Descrição</label>
 								<input type="text" class="form-control" id="descricao" name="descricao" placeholder="Descreva sobre o recebimento" >							
+						</div>
+
+						<div class="col-md-2">							
+								<label>Valor</label>
+								<input type="text" class="form-control" id="valor" name="valor" placeholder="" required>							
 						</div>
 
 						<div class="col-md-5">							
@@ -66,18 +71,13 @@ if(@$receber == 'ocultar'){
 					</div>
 
 
-					<div class="row">
-
-						<div class="col-md-3">							
-								<label>Valor</label>
-								<input type="text" class="form-control" id="valor" name="valor" placeholder="" required>							
-						</div>
+					<div class="row">					
 						
 
 						<div class="col-md-3">							
 								<label>Vencimento</label>
-								<input type="date" class="form-control" id="vencimento" name="vencimento"
-								value="<?php $data_atual ?>">							
+								<input type="date" name="vencimento" id="vencimento"
+								 value="<?php echo $data_atual ?>" class="form-control">						
 						</div>
 
 						<div class="col-md-3">							
@@ -95,11 +95,6 @@ if(@$receber == 'ocultar'){
 								</select>							
 						</div>
 
-						
-					</div>
-
-					<div class="row">
-
 						<div class="col-md-3">							
 								<label>Frequência</label>
 								<select name="frequencia" id="frequencia" class="form-control">
@@ -107,6 +102,27 @@ if(@$receber == 'ocultar'){
 									<option value="1">Cliente 1</option>
 									<option value="2">Cliente 2</option>
 								</select>	
+						</div>
+						
+					</div>
+
+					
+					<div class="row">
+
+					<div class="col-md-6">							
+								<label>Observações</label>
+								<input type="text" class="form-control" id="obs" name="obs" placeholder="Observações" >							
+						</div>
+
+						<div class="col-md-4">							
+								<label>Arquivo</label>
+								<input type="file" class="form-control" id="arquivo" name="arquivo" onchange="carregarImg()">							
+						</div>
+
+						<div class="col-md-2">								
+							<img width="80px" id="target">							
+						</div>
+						
 					</div>
 
 					
@@ -237,34 +253,6 @@ if(@$receber == 'ocultar'){
 
 <script type="text/javascript">
 
-	function listarPermissoes(id){
-		 $.ajax({
-        url: 'paginas/' + pag + "/listar_permissoes.php",
-        method: 'POST',
-        data: {id},
-        dataType: "html",
-
-        success:function(result){        	
-            $("#listar_permissoes").html(result);
-            $('#mensagem_permissao').text('');
-        }
-    });
-	}
-
-	function adicionarPermissao(id, usuario){
-		 $.ajax({
-        url: 'paginas/' + pag + "/add_permissao.php",
-        method: 'POST',
-        data: {id, usuario},
-        dataType: "html",
-
-        success:function(result){        	
-           listarPermissoes(usuario);
-        }
-    });
-	}
-
-
 	function marcarTodos(){
 		let checkbox = document.getElementById('input-todos');
 		var usuario = $('#id_permissoes').val();
@@ -276,33 +264,57 @@ if(@$receber == 'ocultar'){
 		}
 	}
 
-
-	function adicionarPermissoes(id_usuario){
-		
-		$.ajax({
-        url: 'paginas/' + pag + "/add_permissoes.php",
-        method: 'POST',
-        data: {id_usuario},
-        dataType: "html",
-
-        success:function(result){        	
-           listarPermissoes(id_usuario);
-        }
-    });
-	}
-
-
-	function limparPermissoes(id_usuario){
-		
-		$.ajax({
-        url: 'paginas/' + pag + "/limpar_permissoes.php",
-        method: 'POST',
-        data: {id_usuario},
-        dataType: "html",
-
-        success:function(result){        	
-           listarPermissoes(id_usuario);
-        }
-    });
-	}
 </script>
+
+
+		<script type="text/javascript">
+			function carregarImg() {
+				var target = document.getElementById('target');
+				var file = document.querySelector("#arquivo").files[0];
+
+				var arquivo = file['name'];
+				resultado = arquivo.split(".", 2);
+
+				if(resultado[1] === 'pdf'){
+					$('#target').attr('src', "images/pdf.png");
+					return;
+				}
+
+				if(resultado[1] === 'rar' || resultado[1] === 'zip'){
+					$('#target').attr('src', "images/rar.png");
+					return;
+				}
+
+				if(resultado[1] === 'doc' || resultado[1] === 'docx' || resultado[1] === 'txt'){
+					$('#target').attr('src', "images/word.png");
+					return;
+				}
+
+
+				if(resultado[1] === 'xlsx' || resultado[1] === 'xlsm' || resultado[1] === 'xls'){
+					$('#target').attr('src', "images/excel.png");
+					return;
+				}
+
+
+				if(resultado[1] === 'xml'){
+					$('#target').attr('src', "images/xml.png");
+					return;
+				}
+
+
+
+				var reader = new FileReader();
+
+				reader.onloadend = function () {
+					target.src = reader.result;
+				};
+
+				if (file) {
+					reader.readAsDataURL(file);
+
+				} else {
+					target.src = "";
+				}
+			}
+		</script>
