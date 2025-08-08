@@ -132,7 +132,7 @@ if(@$receber == 'ocultar'){
 
 						<div class="col-md-4">							
 								<label>Arquivo</label>
-								<input type="file" class="form-control" id="arquivo" name="arquivo" onchange="carregarImg()">							
+								<input type="file" class="form-control" id="arquivo" name="foto" onchange="carregarImg()">							
 						</div>
 
 						<div class="col-md-2">								

@@ -13,6 +13,8 @@ $obs = $_POST['obs'];
 
 $id = $_POST['id'];
 
+$valor = str_replace(',', '.', $valor);
+
 if($cliente == ""){
 	$cliente = 0;
 }
@@ -25,34 +27,74 @@ if($frequencia == ""){
 	$frequencia = 0;
 }
 
-//validacao email
-$query = $pdo->query("SELECT * from $tabela where email = '$email'");
-$res = $query->fetchAll(PDO::FETCH_ASSOC);
-$id_reg = @$res[0]['id'];
-if(@count($res) > 0 and $id != $id_reg){
-	echo 'Email já Cadastrado!';
+if($data_pgto == ""){
+	$pgto = '';
+}else{
+	$pgto = " ,data_pgto = '$data_pgto'";
+}
+
+//validacao 
+if($descricao == "" and $cliente == "0"){
+	echo 'Selecione um Cliente ou uma Descrição!';
 	exit();
 }
 
-//validacao telefone
-$query = $pdo->query("SELECT * from $tabela where telefone = '$telefone'");
+//validar troca da foto
+$query = $pdo->query("SELECT * FROM $tabela where id = '$id'");
 $res = $query->fetchAll(PDO::FETCH_ASSOC);
-$id_reg = @$res[0]['id'];
-if(@count($res) > 0 and $id != $id_reg){
-	echo 'Telefone já Cadastrado!';
-	exit();
+$total_reg = @count($res);
+if($total_reg > 0){
+	$foto = $res[0]['arquivo'];
+}else{
+	$foto = 'sem-foto.png';
 }
+
+
+
+//SCRIPT PARA SUBIR FOTO NO SERVIDOR
+$nome_img = date('d-m-Y H:i:s') .'-'.@$_FILES['foto']['name'];
+$nome_img = preg_replace('/[ :]+/' , '-' , $nome_img);
+
+$caminho = '../../images/contas/' .$nome_img;
+
+$imagem_temp = @$_FILES['foto']['tmp_name']; 
+
+if(@$_FILES['foto']['name'] != ""){
+	$ext = pathinfo($nome_img, PATHINFO_EXTENSION);   
+	if($ext == 'png' or $ext == 'jpg' or $ext == 'jpeg' or $ext == 'gif' or $ext == 'pdf' or $ext == 'rar' 
+	or $ext == 'zip' or $ext == 'doc' or $ext == 'docx' or $ext == 'webp' or $ext == 'PNG' or $ext == 'JPG' 
+	or $ext == 'JPEG' or $ext == 'GIF' or $ext == 'PDF' or $ext == 'RAR' or $ext == 'ZIP' or $ext == 'DOC' 
+	or $ext == 'DOCX' or $ext == 'WEBP' or $ext == 'xlsx' or $ext == 'xlsm' or $ext == 'xls' or $ext == 'xml'){ 
+	
+			//EXCLUO A FOTO ANTERIOR
+			if($foto != "sem-foto.png"){
+				@unlink('../../images/contas/'.$foto);
+			}
+
+			$foto = $nome_img;
+		
+		move_uploaded_file($imagem_temp, $caminho);
+	}else{
+		echo 'Extensão de Imagem não permitida!';
+		exit();
+	}
+}
+
 
 if($id == ""){
-$query = $pdo->prepare("INSERT INTO $tabela SET nome = :nome, email = :email, senha = '', senha_crip = '$senha_crip', nivel = '$nivel', ativo = 'Sim', foto = 'sem-foto.jpg', telefone = :telefone, data = curDate(), endereco = :endereco ");
+$query = $pdo->prepare("INSERT INTO $tabela SET descricao = :descricao, cliente = :cliente, valor = :valor, 
+vencimento = '$vencimento' $pgto, data_lanc = curDate(), forma_pgto = '$forma_pgto', frequencia = '$frequencia', 
+obs = :obs, arquivo = '$foto', subtotal = :valor ");
 	
 }else{
-$query = $pdo->prepare("UPDATE $tabela SET nome = :nome, email = :email, nivel = '$nivel', telefone = :telefone, endereco = :endereco where id = '$id'");
+$query = $pdo->prepare("UPDATE $tabela SET descricao = :descricao, cliente = :cliente, 
+valor = :valor, vencimento = '$vencimento' $pgto, forma_pgto = '$forma_pgto',
+frequencia = '$frequencia', obs = :obs, arquivo = '$foto', subtotal = :valor where id = '$id'");
 }
-$query->bindValue(":nome", "$nome");
-$query->bindValue(":email", "$email");
-$query->bindValue(":telefone", "$telefone");
-$query->bindValue(":endereco", "$endereco");
+$query->bindValue(":descricao", "$descricao");
+$query->bindValue(":cliente", "$cliente");
+$query->bindValue(":valor", "$valor");
+$query->bindValue(":obs", "$obs");
 $query->execute();
 
 echo 'Salvo com Sucesso';

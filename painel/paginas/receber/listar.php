@@ -1,5 +1,5 @@
 <?php 
-$tabela = 'usuarios';
+$tabela = 'receber';
 require_once("../../../conexao.php");
 
 $query = $pdo->query("SELECT * from $tabela order by id desc");
@@ -11,11 +11,13 @@ echo <<<HTML
 	<table class="table table-hover" id="tabela">
 	<thead> 
 	<tr> 
-	<th>Nome</th>	
-	<th class="esc">Telefone</th>	
-	<th class="esc">Email</th>	
-	<th class="esc">Nível</th>	
-	<th class="esc">Foto</th>	
+	<th>Descrição</th>	
+	<th class="">Valor</th>	
+	<th class="esc">Cliente</th>	
+	<th class="esc">Vencimento</th>	
+	<th class="esc">Pagamento</th>
+	<th class="esc">Forma Pgto</th>
+	<th class="esc">Frequência</th>	
 	<th>Ações</th>
 	</tr> 
 	</thead> 
@@ -25,15 +27,22 @@ HTML;
 
 for($i=0; $i<$linhas; $i++){
 	$id = $res[$i]['id'];
-	$nome = $res[$i]['nome'];
-	$telefone = $res[$i]['telefone'];
-	$email = $res[$i]['email'];
-	$senha = $res[$i]['senha'];
-	$foto = $res[$i]['foto'];
-	$nivel = $res[$i]['nivel'];
-	$endereco = $res[$i]['endereco'];
-	$ativo = $res[$i]['ativo'];
-	$data = $res[$i]['data'];
+	$descricao = $res[$i]['descricao'];
+	$cliente = $res[$i]['cliente'];
+	$valor = $res[$i]['valor'];
+	$vencimento = $res[$i]['vencimento'];
+	$data_pgto = $res[$i]['data_pgto'];
+	$data_lanc = $res[$i]['data_lanc'];
+	$forma_pgto = $res[$i]['forma_pgto'];
+	$frequencia = $res[$i]['frequencia'];
+	$obs = $res[$i]['obs'];
+	$arquivo = $res[$i]['arquivo'];
+	$referencia = $res[$i]['referencia'];
+	$id_ref = $res[$i]['id_ref'];
+	$multa = $res[$i]['multa'];
+	$juros = $res[$i]['juros'];
+	$desconto = $res[$i]['desconto'];
+	$subtotal = $res[$i]['subtotal'];
 
 	$dataF = implode('/', array_reverse(@explode('-', $data)));
 
