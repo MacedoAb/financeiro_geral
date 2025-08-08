@@ -32,7 +32,9 @@ for($i=0; $i < $total_reg; $i++){
 	
 echo <<<HTML
 <tr class="">
-<td>{$nome}</td>
+<td>
+	<input type="checkbox" id="seletor-{$id}" class="form-check-input" onchange="selecionar('{$id}')">
+	{$nome}</td>
 <td>{$taxa}%</td>
 <td>
 		<big><a href="#" onclick="editar('{$id}','{$nome}','{$taxa}')" title="Editar Dados"><i class="fa fa-edit text-primary"></i></a></big>

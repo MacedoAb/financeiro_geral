@@ -6,6 +6,10 @@ $dias = $_POST['dias'];
 $frequencia = $_POST['frequencia'];
 $id = $_POST['id'];
 
+if($dias == ""){
+	$dias = 0;
+}
+
 //validacao
 $query = $pdo->query("SELECT * from $tabela where frequencia = '$frequencia'");
 $res = $query->fetchAll(PDO::FETCH_ASSOC);

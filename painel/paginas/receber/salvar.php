@@ -1,15 +1,29 @@
 <?php 
-$tabela = 'usuarios';
+$tabela = 'receber';
 require_once("../../../conexao.php");
 
-$nome = $_POST['nome'];
-$email = $_POST['email'];
-$telefone = $_POST['telefone'];
-$nivel = $_POST['nivel'];
-$endereco = $_POST['endereco'];
-$senha = '123';
-$senha_crip = sha1($senha);
+$descricao = $_POST['descricao'];
+$valor = $_POST['valor'];
+$cliente = $_POST['cliente'];
+$vencimento = $_POST['vencimento'];
+$data_pgto = $_POST['data_pgto'];
+$forma_pgto = $_POST['forma_pgto'];
+$frequencia = $_POST['frequencia'];
+$obs = $_POST['obs'];
+
 $id = $_POST['id'];
+
+if($cliente == ""){
+	$cliente = 0;
+}
+
+if($forma_pgto == ""){
+	$forma_pgto = 0;
+}
+
+if($frequencia == ""){
+	$frequencia = 0;
+}
 
 //validacao email
 $query = $pdo->query("SELECT * from $tabela where email = '$email'");

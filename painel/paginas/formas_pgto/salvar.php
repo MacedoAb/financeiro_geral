@@ -6,6 +6,10 @@ $id = $_POST['id'];
 $nome = $_POST['nome'];
 $taxa = $_POST['taxa'];
 
+if($taxa == ""){
+	$taxa = 0;
+}
+
 //validar nome
 $query = $pdo->query("SELECT * from $tabela where nome = '$nome'");
 $res = $query->fetchAll(PDO::FETCH_ASSOC);

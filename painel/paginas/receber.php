@@ -89,18 +89,34 @@ if(@$receber == 'ocultar'){
 						<div class="col-md-3">							
 								<label>Forma Pgto</label>
 								<select name="forma_pgto" id="forma_pgto" class="form-control">
-									<option value="0">Nenhum</option>
-									<option value="1">Cliente 1</option>
-									<option value="2">Cliente 2</option>
+									<?php 
+										$query = $pdo->query("SELECT * from formas_pgto order by id asc");
+										$res = $query->fetchAll(PDO::FETCH_ASSOC);
+										$linhas = @count($res);
+										if($linhas > 0){
+											for($i=0; $i<$linhas; $i++){
+												echo '<option value="'.$res[$i]['id'].'">'.$res[$i]['nome'].'</option>';
+											}
+										}else{
+											echo '<option value="0">Cadastre uma Forma de Pagamento</option>';
+										} ?>
 								</select>							
 						</div>
 
 						<div class="col-md-3">							
 								<label>Frequência</label>
 								<select name="frequencia" id="frequencia" class="form-control">
-									<option value="0">Nenhum</option>
-									<option value="1">Cliente 1</option>
-									<option value="2">Cliente 2</option>
+									<?php 
+										$query = $pdo->query("SELECT * from frequencias order by id asc");
+										$res = $query->fetchAll(PDO::FETCH_ASSOC);
+										$linhas = @count($res);
+										if($linhas > 0){
+											for($i=0; $i<$linhas; $i++){
+												echo '<option value="'.$res[$i]['dias'].'">'.$res[$i]['frequencia'].'</option>';
+											}
+										}else{
+											echo '<option value="0">Cadastre uma Forma de Pagamento</option>';
+										} ?>
 								</select>	
 						</div>
 						

@@ -1,9 +1,6 @@
 <?php 
-@session_start();
-require_once("verificar.php");
-require_once("../conexao.php");
 
-$pag = 'pgto';
+$pag = 'formas_pgto';
 
 //verificar se ele tem a permissão de estar nessa página
 if(@$pgto == 'ocultar'){
@@ -13,18 +10,28 @@ if(@$pgto == 'ocultar'){
 
 ?>
 
-<div class="">      
+<div class="main-page margin-mobile">      
 	<a class="btn btn-primary" onclick="inserir()" class="btn btn-primary btn-flat btn-pri"><i class="fa fa-plus" aria-hidden="true"></i> Nova Forma PGTO</a>
-</div>
 
-<div class="bs-example widget-shadow" style="padding:15px" id="listar">
+
+	<li class="dropdown head-dpdn2" style="display: inline-block;">		
+			<a href="#" data-toggle="dropdown"  class="btn btn-danger dropdown-toggle" id="btn-deletar" style="display:none"><span class="fa fa-trash-o"></span> Deletar</a>
+
+			<ul class="dropdown-menu">
+			<li>
+			<div class="notification_desc2">
+			<p>Excluir Selecionados? <a href="#" onclick="deletarSel()"><span class="text-danger">Sim</span></a></p>
+			</div>
+			</li>										
+			</ul>
+	</li>
+
+		<div class="bs-example widget-shadow" style="padding:15px" id="listar">
 	
+		</div>
+
+	<input type="hidden" id="ids">
 </div>
-
-
-
-
-
 
 <!-- Modal Inserir-->
 <div class="modal fade" id="modalForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -77,4 +84,47 @@ if(@$pgto == 'ocultar'){
 <script type="text/javascript">var pag = "<?=$pag?>"</script>
 <script src="js/ajax.js"></script>
 
+<script type="text/javascript">
 
+function marcarTodos(){
+		let checkbox = document.getElementById('input-todos');
+		var usuario = $('#id_permissoes').val();
+		
+		if(checkbox.checked) {
+		    adicionarPermissoes(usuario);		    
+		} else {
+		    limparPermissoes(usuario);
+		}
+	}
+
+	function selecionar(id){
+
+		var ids = $('#ids').val();
+
+		if($('#seletor-'+id).is(":checked") == true){
+			var novo_id = ids + id + '-';
+			$('#ids').val(novo_id);
+		}else{
+			var retirar = ids.replace(id + '-', '');
+			$('#ids').val(retirar);
+		}
+
+		var ids_final = $('#ids').val();
+		if(ids_final == ""){
+			$('#btn-deletar').hide();
+		}else{
+			$('#btn-deletar').show();
+		}
+	}
+
+	function deletarSel(){
+		var ids = $('#ids').val();
+		var id = ids.split("-");
+		
+		for(i=0; i<id.length-1; i++){
+			excluir(id[i]);			
+		}
+
+		limparCampos();
+	}
+</script>
