@@ -2,8 +2,61 @@
 $tabela = 'receber';
 require_once("../../../conexao.php");
 
+$data_hoje = date('Y-m-d');
+$data_atual = date('Y-m-d');
+$mes_atual = Date('m');
+$ano_atual = Date('Y');
+$data_inicio_mes = $ano_atual."-".$mes_atual."-01";
+$data_inicio_ano = $ano_atual."-01-01";
 
-$query = $pdo->query("SELECT * from $tabela order by id desc");
+$data_ontem = date('Y-m-d', strtotime("-1 days",strtotime($data_atual)));
+$data_amanha = date('Y-m-d', strtotime("+1 days",strtotime($data_atual)));
+
+
+if($mes_atual == '04' || $mes_atual == '06' || $mes_atual == '07' || $mes_atual == '09'){
+	$data_final_mes = $ano_atual.'-'.$mes_atual.'-30';
+}else if($mes_atual == '02'){
+	$bissexto = date('L', @mktime(0, 0, 0, 1, 1, $ano_atual));
+	if($bissexto == 1){
+		$data_final_mes = $ano_atual.'-'.$mes_atual.'-29';
+	}else{
+		$data_final_mes = $ano_atual.'-'.$mes_atual.'-28';
+	}
+
+}else{
+	$data_final_mes = $ano_atual.'-'.$mes_atual.'-31';
+}
+
+$total_pago = 0;
+$total_pendentes = 0;
+
+$total_pagoF = 0;
+$total_pendentesF = 0;
+
+$dataInicial = @$_POST['p1'];
+$dataFinal = @$_POST['p2'];
+$pago = @$_POST['p3'];
+$tipo_data = @$_POST['p4'];
+
+if($dataInicial == ""){
+	$dataInicial = $data_inicio_mes;
+}
+
+if($dataFinal == ""){
+	$dataFinal = $data_final_mes;
+}
+
+if($tipo_data == ""){
+	$tipo_data = 'vencimento';
+}
+
+if($pago == 'Vencidas'){
+	$query = $pdo->query("SELECT * from $tabela where vencimento < curDate() and pago != 'Sim' order by id desc");
+}else{
+	$query = $pdo->query("SELECT * from $tabela where $tipo_data >= '$dataInicial' and $tipo_data <= '$dataFinal' and pago LIKE '%$pago%' order by id desc");
+}
+
+
 $res = $query->fetchAll(PDO::FETCH_ASSOC);
 $linhas = @count($res);
 if($linhas > 0){
@@ -16,9 +69,10 @@ echo <<<HTML
 	<th class="">Valor</th>	
 	<th class="esc">Cliente</th>	
 	<th class="esc">Vencimento</th>	
-	<th class="esc">Pagamento</th>
-	<th class="esc">Forma Pgto</th>
+	<th class="esc">Pagamento</th>	
+	<th class="esc">Forma Pgto</th>	
 	<th class="esc">Frequência</th>	
+	<th class="esc">Arquivo</th>	
 	<th>Ações</th>
 	</tr> 
 	</thead> 
@@ -43,6 +97,7 @@ for($i=0; $i<$linhas; $i++){
 	$multa = $res[$i]['multa'];
 	$juros = $res[$i]['juros'];
 	$desconto = $res[$i]['desconto'];
+	$taxa = $res[$i]['taxa'];
 	$subtotal = $res[$i]['subtotal'];
 	$usuario_lanc = $res[$i]['usuario_lanc'];
 	$usuario_pgto = $res[$i]['usuario_pgto'];
@@ -52,11 +107,22 @@ for($i=0; $i<$linhas; $i++){
 	$data_pgtoF = implode('/', array_reverse(@explode('-', $data_pgto)));
 	$data_lancF = implode('/', array_reverse(@explode('-', $data_lanc)));
 
+
+
 	$valorF = @number_format($valor, 2, ',', '.');
 	$multaF = @number_format($multa, 2, ',', '.');
 	$jurosF = @number_format($juros, 2, ',', '.');
 	$descontoF = @number_format($desconto, 2, ',', '.');
+	$taxaF = @number_format($taxa, 2, ',', '.');
 	$subtotalF = @number_format($subtotal, 2, ',', '.');
+
+	if($pago == "Sim"){
+		$valor_finalF = @number_format($subtotal, 2, ',', '.');
+	}else{
+		$valor_finalF = @number_format($valor, 2, ',', '.');
+	}
+
+
 
 	//extensão do arquivo
 $ext = pathinfo($arquivo, PATHINFO_EXTENSION);
@@ -66,14 +132,15 @@ if($ext == 'pdf' || $ext == 'PDF'){
 	$tumb_arquivo = 'rar.png';
 }else if($ext == 'doc' || $ext == 'docx' || $ext == 'DOC' || $ext == 'DOCX'){
 	$tumb_arquivo = 'word.png';
+}else if($ext == 'xlsx' || $ext == 'xlsm' || $ext == 'xls'){
+	$tumb_arquivo = 'excel.png';
+}else if($ext == 'xml'){
+	$tumb_arquivo = 'xml.png';
 }else{
 	$tumb_arquivo = $arquivo;
 }
-
-$data_lancF = implode('/', array_reverse(@explode('-', $data_lanc)));
-$data_vencF = implode('/', array_reverse(@explode('-', $data_venc)));
-$data_pgtoF = implode('/', array_reverse(@explode('-', $data_pgto)));
-$valorF = number_format($valor, 2, ',', '.');
+	
+	
 
 $query2 = $pdo->query("SELECT * FROM usuarios where id = '$usuario_lanc'");
 $res2 = $query2->fetchAll(PDO::FETCH_ASSOC);
@@ -101,18 +168,18 @@ if(@count($res2) > 0){
 	$nome_frequencia = 'Sem Registro';
 }
 
-// $nome_pessoa = 'Sem Registro';
-// $tipo_pessoa = 'Pessoa';
-// $pix_pessoa = 'Sem Registro';
-// $tel_pessoa = 'Sem Registro';
-
-$query2 = $pdo->query("SELECT * FROM clientes where id = '$cliente'");
+$query2 = $pdo->query("SELECT * FROM formas_pgto where id = '$forma_pgto'");
 $res2 = $query2->fetchAll(PDO::FETCH_ASSOC);
 if(@count($res2) > 0){
-	$nome_cliente = $res2[0]['nome'];	
+	$nome_pgto = $res2[0]['nome'];
+	$taxa_pgto = $res2[0]['taxa'];
 }else{
-	$nome_cliente = 'Sem Registro';
+	$nome_pgto = 'Sem Registro';
+	$taxa_pgto = 0;
 }
+
+
+$nome_cliente = 'Cliente Teste';
 
 
 if($pago == 'Sim'){
@@ -123,12 +190,59 @@ if($pago == 'Sim'){
 	$classe_pago = 'text-danger';
 	$ocultar = '';
 	$total_pendentes += $valor;
+}	
+
+$valor_multa = 0;
+$valor_juros = 0;
+$classe_venc = '';
+if(strtotime($vencimento) < strtotime($data_hoje)){
+	$classe_venc = 'text-danger';
+	$valor_multa = $multa_atraso;
+
+	//pegar a quantidade de dias que o pagamento está atrasado
+	$dif = strtotime($data_hoje) - strtotime($vencimento);
+	$dias_vencidos = floor($dif / (60*60*24));
+
+	$valor_juros = ($valor * $juros_atraso / 100) * $dias_vencidos;
 }
 
+$total_pendentesF = @number_format($total_pendentes, 2, ',', '.');
+$total_pagoF = @number_format($total_pago, 2, ',', '.');
+
+$taxa_conta = $taxa_pgto * $valor / 100;
 
 
 
-	
+
+//PEGAR RESIDUOS DA CONTA
+	$total_resid = 0;
+	$valor_com_residuos = 0;
+	$query2 = $pdo->query("SELECT * FROM receber WHERE id_ref = '$id' and referencia = 'Residuo'");
+	$res2 = $query2->fetchAll(PDO::FETCH_ASSOC);
+	if(@count($res2) > 0){
+
+		$descricao = '(Resíduo) - ' .$descricao;
+
+		for($i2=0; $i2 < @count($res2); $i2++){
+			foreach ($res2[$i2] as $key => $value){} 
+				$id_res = $res2[$i2]['id'];
+			$valor_resid = $res2[$i2]['valor'];
+			$total_resid += $valor_resid - $res2[$i2]['desconto'];
+		}
+
+
+		$valor_com_residuos = $valor + $total_resid;
+	}
+	if($valor_com_residuos > 0){
+		$vlr_antigo_conta = '('.$valor_com_residuos.')';
+		$descricao_link = '';
+		$descricao_texto = 'd-none';
+	}else{
+		$vlr_antigo_conta = '';
+		$descricao_link = 'd-none';
+		$descricao_texto = '';
+	}
+
 echo <<<HTML
 <tr>
 <td>
@@ -136,12 +250,16 @@ echo <<<HTML
 <i class="fa fa-square {$classe_pago} mr-1"></i>
 {$descricao}
 </td>
-<td class="esc">{$telefone}</td>
-<td class="esc">{$email}</td>
-<td class="esc">{$nivel}</td>
-<td class="esc"><img src="images/perfil/{$foto}" width="25px"></td>
+<td class="">R$ {$valor_finalF} <small><a href="#" onclick="mostrarResiduos('{$id}')" class="text-danger" title="Ver Resíduos">{$vlr_antigo_conta}</a></small></td>	
+<td class="esc">{$nome_cliente}</td>
+<td class="esc {$classe_venc}">{$vencimentoF}</td>
+<td class="esc">{$data_pgtoF}</td>
+<td class="esc">{$nome_pgto}</td>
+<td class="esc">{$nome_frequencia}</td>
+<td class="esc"><a href="images/contas/{$arquivo}" target="_blank"><img src="images/contas/{$tumb_arquivo}" width="25px"></a></td>
 <td>
-	<big><a href="#" onclick="editar('{$id}','{$nome}','{$email}','{$telefone}','{$endereco}','{$nivel}')" title="Editar Dados"><i class="fa fa-edit text-primary"></i></a></big>
+	<big><a href="#" onclick="editar('{$id}','{$descricao}','{$valor}','{$cliente}','{$vencimento}','{$data_pgto}','{$forma_pgto}',
+	'{$frequencia}','{$obs}','{$tumb_arquivo}')" title="Editar Dados"><i class="fa fa-edit text-primary"></i></a></big>
 
 	<li class="dropdown head-dpdn2" style="display: inline-block;">
 		<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><big><i class="fa fa-trash-o text-danger"></i></big></a>
@@ -155,13 +273,18 @@ echo <<<HTML
 		</ul>
 </li>
 
-<big><a href="#" onclick="mostrar('{$nome}','{$email}','{$telefone}','{$endereco}','{$ativo}','{$dataF}', '{$senha}', '{$nivel}', '{$foto}')" title="Mostrar Dados"><i class="fa fa-info-circle text-primary"></i></a></big>
+<big><a href="#" onclick="mostrar('{$descricao}','{$valorF}','{$nome_cliente}','{$vencimentoF}','{$data_pgtoF}','{$nome_pgto}',
+'{$nome_frequencia}','{$obs}','{$tumb_arquivo}','{$multaF}','{$jurosF}','{$descontoF}','{$taxaF}','{$subtotalF}','{$nome_usu_lanc}',
+'{$nome_usu_pgto}', '{$pago}', '{$arquivo}')" title="Mostrar Dados"><i class="fa fa-info-circle text-primary"></i></a></big>
+
+<big><a class="{$ocultar}" href="#" onclick="baixar('{$id}', '{$valor}', '{$descricao}', '{$forma_pgto}', '{$taxa_conta}', '{$valor_multa}', '{$valor_juros}')" title="Baixar Conta"><i class="fa fa-check-square " style="color:#079934"></i></a></big>
+
+	<big><a class="{$ocultar}" href="#" onclick="parcelar('{$id}', '{$valor}', '{$descricao}')" title="Parcelar Conta"><i class="fa fa-calendar-o " style="color:#7f7f7f"></i></a></big>
+
+		<big><a href="#" onclick="arquivo('{$id}', '{$descricao}')" title="Inserir / Ver Arquivos"><i class="fa fa-file-o " style="color:#22146e"></i></a></big>
 
 
-<big><a href="#" onclick="ativar('{$id}', '{$acao}')" title="{$titulo_link}"><i class="fa {$icone} text-success"></i></a></big>
 
-
-<big><a class="{$mostrar_adm}" href="#" onclick="permissoes('{$id}', '{$nome}')" title="Dar Permissões"><i class="fa fa-lock text-primary"></i></a></big>
 
 </td>
 </tr>
@@ -173,7 +296,23 @@ HTML;
 echo <<<HTML
 </tbody>
 <small><div align="center" id="mensagem-excluir"></div></small>
+
 </table>
+
+<br>
+
+			<span style="font-size: 13px; border:1px solid #6092a8; padding:5px; ">
+				Filtrar Por:  
+				<a href="#" onclick="tipoData('vencimento')">Vencimento</a> / 
+				<a href="#" onclick="tipoData('data_pgto')">Pagamento</a> /
+				<a href="#" onclick="tipoData('data_lanc')">Lançamento</a> 
+			</span>
+
+			<p align="right" style="margin-top: -10px">
+				<span style="margin-right: 10px">Total Pendentes  <span style="color:red">R$ {$total_pendentesF} </span></span>
+				<span>Total Pago  <span style="color:green">R$ {$total_pagoF} </span></span>
+			</p>
+
 HTML;
 
 }else{
@@ -195,47 +334,73 @@ HTML;
 } );
 </script>
 
+
 <script type="text/javascript">
-	function editar(id, nome, email, telefone, endereco, nivel){
+	function editar(id, descricao, valor, cliente, vencimento, data_pgto, forma_pgto, frequencia, obs, arquivo){
 		$('#mensagem').text('');
     	$('#titulo_inserir').text('Editar Registro');
 
     	$('#id').val(id);
-    	$('#nome').val(nome);
-    	$('#email').val(email);
-    	$('#telefone').val(telefone);
-    	$('#endereco').val(endereco);
-    	$('#nivel').val(nivel).change();
+    	$('#descricao').val(descricao);
+    	$('#valor').val(valor);
+    	$('#cliente').val(cliente).change();
+    	$('#vencimento').val(vencimento);
+    	$('#data_pgto').val(data_pgto);
+    	$('#forma_pgto').val(forma_pgto).change();
+    	$('#frequencia').val(frequencia).change();
+    	$('#obs').val(obs);
+
+    	$('#arquivo').val('');
+    	$('#target').attr('src','images/contas/' + arquivo);		
 
     	$('#modalForm').modal('show');
 	}
 
 
-	function mostrar(nome, email, telefone, endereco, ativo, data, senha, nivel, foto){
+	function mostrar(descricao, valor, cliente, vencimento, data_pgto, nome_pgto, frequencia, obs, arquivo, multa, juros, desconto, taxa, total, usu_lanc, usu_pgto, pago, arq){
+
+		if(data_pgto == ""){
+			data_pgto = 'Pendente';
+		}
 		    	
-    	$('#titulo_dados').text(nome);
-    	$('#email_dados').text(email);
-    	$('#telefone_dados').text(telefone);
-    	$('#endereco_dados').text(endereco);
-    	$('#ativo_dados').text(ativo);
-    	$('#data_dados').text(data);
+    	$('#titulo_dados').text(descricao);
+    	$('#valor_dados').text(valor);
+    	$('#cliente_dados').text(cliente);
+    	$('#vencimento_dados').text(vencimento);
+    	$('#data_pgto_dados').text(data_pgto);
+    	$('#nome_pgto_dados').text(nome_pgto);
+    	$('#frequencia_dados').text(frequencia);
+    	$('#obs_dados').text(obs);
     	
-    	$('#nivel_dados').text(nivel);
-    	$('#foto_dados').attr("src", "images/perfil/" + foto);
+    	$('#multa_dados').text(multa);
+    	$('#juros_dados').text(juros);
+    	$('#desconto_dados').text(desconto);    	
+    	$('#taxa_dados').text(taxa);
+    	$('#total_dados').text(total);
+    	$('#usu_lanc_dados').text(usu_lanc);
+    	$('#usu_pgto_dados').text(usu_pgto);
     	
+    	$('#pago_dados').text(pago);
+    	$('#target_dados').attr("src", "images/contas/" + arquivo);
+    	$('#target_link_dados').attr("href", "images/contas/" + arq);
 
     	$('#modalDados').modal('show');
 	}
 
 	function limparCampos(){
 		$('#id').val('');
-    	$('#nome').val('');
-    	$('#email').val('');
-    	$('#telefone').val('');
-    	$('#endereco').val('');
+    	$('#descricao').val('');
+    	$('#valor').val('');    	
+    	$('#vencimento').val("<?=$data_atual?>");
+    	$('#data_pgto').val('');    	
+    	$('#obs').val('');
+    	$('#arquivo').val('');
+
+    	$('#target').attr("src", "images/contas/sem-foto.png");
 
     	$('#ids').val('');
     	$('#btn-deletar').hide();	
+    	$('#btn-baixar').hide();	
 	}
 
 	function selecionar(id){
@@ -253,8 +418,10 @@ HTML;
 		var ids_final = $('#ids').val();
 		if(ids_final == ""){
 			$('#btn-deletar').hide();
+			$('#btn-baixar').hide();
 		}else{
 			$('#btn-deletar').show();
+			$('#btn-baixar').show();
 		}
 	}
 
@@ -270,6 +437,34 @@ HTML;
 	}
 
 
+	function deletarSelBaixar(){
+		var ids = $('#ids').val();
+		var id = ids.split("-");
+
+		for(i=0; i<id.length-1; i++){
+			var novo_id = id[i];
+				$.ajax({
+					url: 'paginas/' + pag + "/baixar_multiplas.php",
+					method: 'POST',
+					data: {novo_id},
+					dataType: "html",
+
+					success:function(result){
+						//alert(result)
+						
+					}
+				});		
+		}
+
+		setTimeout(() => {
+		  	buscar();
+			limparCampos();
+		}, 1000);
+
+		
+	}
+
+
 	function permissoes(id, nome){
 		    	
     	$('#id_permissoes').val(id);
@@ -280,7 +475,61 @@ HTML;
 	}
 
 	
+		function parcelar(id, valor, nome){
+    $('#id-parcelar').val(id);
+    $('#valor-parcelar').val(valor);
+    $('#qtd-parcelar').val('');
+    $('#nome-parcelar').text(nome);
+    $('#nome-input-parcelar').val(nome);
+    $('#modalParcelar').modal('show');
+    $('#mensagem-parcelar').text('');
+}
 
 
+function baixar(id, valor, descricao, pgto, taxa, multa, juros){
+	$('#id-baixar').val(id);
+	$('#descricao-baixar').text(descricao);
+	$('#valor-baixar').val(valor);
+	$('#saida-baixar').val(pgto).change();
+	$('#subtotal').val(valor);
+
+	
+	$('#valor-juros').val(juros);
+	$('#valor-desconto').val('');
+	$('#valor-multa').val(multa);
+	$('#valor-taxa').val(taxa);
+
+	totalizar()
+
+	$('#modalBaixar').modal('show');
+	$('#mensagem-baixar').text('');
+}
+
+
+function mostrarResiduos(id){
+
+	$.ajax({
+		url: 'paginas/' + pag + "/listar-residuos.php",
+		method: 'POST',
+		data: {id},
+		dataType: "html",
+
+		success:function(result){
+			$("#listar-residuos").html(result);
+		}
+	});
+	$('#modalResiduos').modal('show');
+	
+	
+}
+
+function arquivo(id, nome){
+    $('#id-arquivo').val(id);    
+    $('#nome-arquivo').text(nome);
+    $('#modalArquivos').modal('show');
+    $('#mensagem-arquivo').text(''); 
+    $('#arquivo_conta').val('');
+    listarArquivos();   
+}
 	
 </script>
