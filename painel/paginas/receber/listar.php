@@ -2,6 +2,7 @@
 $tabela = 'receber';
 require_once("../../../conexao.php");
 
+
 $query = $pdo->query("SELECT * from $tabela order by id desc");
 $res = $query->fetchAll(PDO::FETCH_ASSOC);
 $linhas = @count($res);
@@ -43,33 +44,97 @@ for($i=0; $i<$linhas; $i++){
 	$juros = $res[$i]['juros'];
 	$desconto = $res[$i]['desconto'];
 	$subtotal = $res[$i]['subtotal'];
+	$usuario_lanc = $res[$i]['usuario_lanc'];
+	$usuario_pgto = $res[$i]['usuario_pgto'];
+	$pago = $res[$i]['pago'];
 
-	$dataF = implode('/', array_reverse(@explode('-', $data)));
+	$vencimentoF = implode('/', array_reverse(@explode('-', $vencimento)));
+	$data_pgtoF = implode('/', array_reverse(@explode('-', $data_pgto)));
+	$data_lancF = implode('/', array_reverse(@explode('-', $data_lanc)));
 
-	if($ativo == 'Sim'){
-	$icone = 'fa-check-square';
-	$titulo_link = 'Desativar Usuário';
-	$acao = 'Não';
-	$classe_ativo = '';
-	}else{
-		$icone = 'fa-square-o';
-		$titulo_link = 'Ativar Usuário';
-		$acao = 'Sim';
-		$classe_ativo = '#c4c4c4';
-	}
+	$valorF = @number_format($valor, 2, ',', '.');
+	$multaF = @number_format($multa, 2, ',', '.');
+	$jurosF = @number_format($juros, 2, ',', '.');
+	$descontoF = @number_format($desconto, 2, ',', '.');
+	$subtotalF = @number_format($subtotal, 2, ',', '.');
 
-	$mostrar_adm = '';
-	if($nivel == 'Administrador'){
-		$senha = '******';
-		$mostrar_adm = 'ocultar';
-	}
+	//extensão do arquivo
+$ext = pathinfo($arquivo, PATHINFO_EXTENSION);
+if($ext == 'pdf' || $ext == 'PDF'){
+	$tumb_arquivo = 'pdf.png';
+}else if($ext == 'rar' || $ext == 'zip' || $ext == 'RAR' || $ext == 'ZIP'){
+	$tumb_arquivo = 'rar.png';
+}else if($ext == 'doc' || $ext == 'docx' || $ext == 'DOC' || $ext == 'DOCX'){
+	$tumb_arquivo = 'word.png';
+}else{
+	$tumb_arquivo = $arquivo;
+}
+
+$data_lancF = implode('/', array_reverse(@explode('-', $data_lanc)));
+$data_vencF = implode('/', array_reverse(@explode('-', $data_venc)));
+$data_pgtoF = implode('/', array_reverse(@explode('-', $data_pgto)));
+$valorF = number_format($valor, 2, ',', '.');
+
+$query2 = $pdo->query("SELECT * FROM usuarios where id = '$usuario_lanc'");
+$res2 = $query2->fetchAll(PDO::FETCH_ASSOC);
+if(@count($res2) > 0){
+	$nome_usu_lanc = $res2[0]['nome'];
+}else{
+	$nome_usu_lanc = 'Sem Usuário';
+}
 
 
+$query2 = $pdo->query("SELECT * FROM usuarios where id = '$usuario_pgto'");
+$res2 = $query2->fetchAll(PDO::FETCH_ASSOC);
+if(@count($res2) > 0){
+	$nome_usu_pgto = $res2[0]['nome'];
+}else{
+	$nome_usu_pgto = 'Sem Usuário';
+}
+
+
+$query2 = $pdo->query("SELECT * FROM frequencias where dias = '$frequencia'");
+$res2 = $query2->fetchAll(PDO::FETCH_ASSOC);
+if(@count($res2) > 0){
+	$nome_frequencia = $res2[0]['frequencia'];
+}else{
+	$nome_frequencia = 'Sem Registro';
+}
+
+// $nome_pessoa = 'Sem Registro';
+// $tipo_pessoa = 'Pessoa';
+// $pix_pessoa = 'Sem Registro';
+// $tel_pessoa = 'Sem Registro';
+
+$query2 = $pdo->query("SELECT * FROM clientes where id = '$cliente'");
+$res2 = $query2->fetchAll(PDO::FETCH_ASSOC);
+if(@count($res2) > 0){
+	$nome_cliente = $res2[0]['nome'];	
+}else{
+	$nome_cliente = 'Sem Registro';
+}
+
+
+if($pago == 'Sim'){
+	$classe_pago = 'verde';
+	$ocultar = 'ocultar';
+	$total_pago += $subtotal;
+}else{
+	$classe_pago = 'text-danger';
+	$ocultar = '';
+	$total_pendentes += $valor;
+}
+
+
+
+
+	
 echo <<<HTML
-<tr style="color:{$classe_ativo}">
+<tr>
 <td>
 <input type="checkbox" id="seletor-{$id}" class="form-check-input" onchange="selecionar('{$id}')">
-{$nome}
+<i class="fa fa-square {$classe_pago} mr-1"></i>
+{$descricao}
 </td>
 <td class="esc">{$telefone}</td>
 <td class="esc">{$email}</td>

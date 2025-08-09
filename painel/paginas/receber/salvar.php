@@ -1,6 +1,8 @@
 <?php 
 $tabela = 'receber';
 require_once("../../../conexao.php");
+@session_start();
+$id_usuario = @$_SESSION['id'];
 
 $descricao = $_POST['descricao'];
 $valor = $_POST['valor'];
@@ -29,8 +31,12 @@ if($frequencia == ""){
 
 if($data_pgto == ""){
 	$pgto = '';
+	$usu_pgto = '';
+	$pago = 'Não';
 }else{
 	$pgto = " ,data_pgto = '$data_pgto'";
+	$usu_pgto = " ,usuario_pgto = '$id_usuario'";
+	$pago = 'Sim';
 }
 
 //validacao 
@@ -84,7 +90,7 @@ if(@$_FILES['foto']['name'] != ""){
 if($id == ""){
 $query = $pdo->prepare("INSERT INTO $tabela SET descricao = :descricao, cliente = :cliente, valor = :valor, 
 vencimento = '$vencimento' $pgto, data_lanc = curDate(), forma_pgto = '$forma_pgto', frequencia = '$frequencia', 
-obs = :obs, arquivo = '$foto', subtotal = :valor ");
+obs = :obs, arquivo = '$foto', subtotal = :valor, usuario_lanc = '$id_usuario' $usu_pgto, pago = '$pago' ");
 	
 }else{
 $query = $pdo->prepare("UPDATE $tabela SET descricao = :descricao, cliente = :cliente, 
