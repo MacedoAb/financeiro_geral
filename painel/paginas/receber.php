@@ -177,32 +177,60 @@ if(@$receber == 'ocultar'){
 			
 			<div class="modal-body">
 				<div class="row" style="margin-top: 0px">
-					<div class="col-md-6" style="margin-bottom: 5px">
-						<span><b>Telefone: </b></span><span id="telefone_dados"></span>
+					<div class="col-md-4" style="margin-bottom: 5px">
+						<span><b>Valor: </b></span><span id="valor_dados"></span>
 					</div>
 
 					
-					<div class="col-md-12" style="margin-bottom: 5px">
-						<span><b>Email: </b></span><span id="email_dados"></span>
+					<div class="col-md-8" style="margin-bottom: 5px">
+						<span><b>Cliente: </b></span><span id="cliente_dados"></span>
 					</div>
 
 					
 
 
 					<div class="col-md-6" style="margin-bottom: 5px">
-						<span><b>Nível: </b></span><span id="nivel_dados"></span>
+						<span><b>Vencimento: </b></span><span id="vencimento_dados"></span>
 					</div>
 
 					<div class="col-md-6" style="margin-bottom: 5px">
-						<span><b>Ativo: </b></span><span id="ativo_dados"></span>
+						<span><b>Pagamento: </b></span><span id="data_pgto_dados"></span>
 					</div>
 
 					<div class="col-md-6" style="margin-bottom: 5px">
-						<span><b>Data Cadastro: </b></span><span id="data_dados"></span>
+						<span><b>Forma Pgto: </b></span><span id="nome_pgto_dados"></span>
+					</div>
+
+					<div class="col-md-6" style="margin-bottom: 5px">
+						<span><b>Frequência: </b></span><span id="frequencia_dados"></span>
+					</div>
+
+					<div class="col-md-6" style="margin-bottom: 5px">
+						<span><b>Multa: </b></span><span id="multa_dados"></span>
+					</div>
+
+					<div class="col-md-6" style="margin-bottom: 5px">
+						<span><b>Juros: </b></span><span id="juros_dados"></span>
 					</div>
 
 					<div class="col-md-12" style="margin-bottom: 5px">
-						<span><b>Endereço: </b></span><span id="endereco_dados"></span>
+						<span><b>Obs: </b></span><span id="obs_dados"></span>
+					</div>
+
+					<div class="col-md-6" style="margin-bottom: 5px">
+						<span><b>Desconto: </b></span><span id="desconto_dados"></span>
+					</div>
+
+					<div class="col-md-6" style="margin-bottom: 5px">
+						<span><b>Taxa: </b></span><span id="taxa_dados"></span>
+					</div>
+
+					<div class="col-md-6" style="margin-bottom: 5px">
+						<span><b>Subtotal: </b></span><span id="total_dados"></span>
+					</div>
+
+					<div class="col-md-6" style="margin-bottom: 5px">
+						<span><b>Pago: </b></span><span id="pago_dados"></span>
 					</div>
 
 					<div class="col-md-12" style="margin-bottom: 5px">
