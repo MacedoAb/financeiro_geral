@@ -4,6 +4,29 @@ require_once("../conexao.php");
 require_once("verificar.php");
 
 $data_atual = date('Y-m-d');
+$mes_atual = Date('m');
+$ano_atual = Date('Y');
+$data_inicio_mes = $ano_atual."-".$mes_atual."-01";
+$data_inicio_ano = $ano_atual."-01-01";
+
+$data_ontem = date('Y-m-d', strtotime("-1 days",strtotime($data_atual)));
+$data_amanha = date('Y-m-d', strtotime("+1 days",strtotime($data_atual)));
+
+
+if($mes_atual == '04' || $mes_atual == '06' || $mes_atual == '07' || $mes_atual == '09'){
+	$data_final_mes = $ano_atual.'-'.$mes_atual.'-30';
+}else if($mes_atual == '02'){
+	$bissexto = date('L', @mktime(0, 0, 0, 1, 1, $ano_atual));
+	if($bissexto == 1){
+		$data_final_mes = $ano_atual.'-'.$mes_atual.'-29';
+	}else{
+		$data_final_mes = $ano_atual.'-'.$mes_atual.'-28';
+	}
+
+}else{
+	$data_final_mes = $ano_atual.'-'.$mes_atual.'-31';
+}
+
 
 $pag_inicial = 'home';
 if(@$_SESSION['nivel'] != 'Administrador'){

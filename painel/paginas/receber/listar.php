@@ -197,13 +197,13 @@ $valor_juros = 0;
 $classe_venc = '';
 if(strtotime($vencimento) < strtotime($data_hoje)){
 	$classe_venc = 'text-danger';
-	$valor_multa = $multa_atraso;
+	// $valor_multa = $multa_atraso;
 
 	//pegar a quantidade de dias que o pagamento está atrasado
 	$dif = strtotime($data_hoje) - strtotime($vencimento);
 	$dias_vencidos = floor($dif / (60*60*24));
 
-	$valor_juros = ($valor * $juros_atraso / 100) * $dias_vencidos;
+	// $valor_juros = ($valor * $juros_atraso / 100) * $dias_vencidos;
 }
 
 $total_pendentesF = @number_format($total_pendentes, 2, ',', '.');
