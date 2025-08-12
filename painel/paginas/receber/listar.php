@@ -221,7 +221,7 @@ $taxa_conta = $taxa_pgto * $valor / 100;
 	$res2 = $query2->fetchAll(PDO::FETCH_ASSOC);
 	if(@count($res2) > 0){
 
-		$descricao = '(Resíduo) - ' .$descricao;
+		$descricao = '(Residuo) - ' .$descricao;
 
 		for($i2=0; $i2 < @count($res2); $i2++){
 			foreach ($res2[$i2] as $key => $value){} 
@@ -473,9 +473,8 @@ HTML;
     	$('#modalPermissoes').modal('show');
     	listarPermissoes(id);
 	}
-
 	
-		function parcelar(id, valor, nome){
+function parcelar(id, valor, nome){
     $('#id-parcelar').val(id);
     $('#valor-parcelar').val(valor);
     $('#qtd-parcelar').val('');
