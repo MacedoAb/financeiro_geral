@@ -302,7 +302,7 @@ echo <<<HTML
 <br>
 
 			<span style="font-size: 13px; border:1px solid #6092a8; padding:5px; ">
-				Filtrar Por:  
+				Filtrar por:  
 				<a href="#" onclick="tipoData('vencimento')">Vencimento</a> / 
 				<a href="#" onclick="tipoData('data_pgto')">Pagamento</a> /
 				<a href="#" onclick="tipoData('data_lanc')">Lançamento</a> 

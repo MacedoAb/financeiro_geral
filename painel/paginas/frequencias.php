@@ -12,7 +12,7 @@ if(@$frequencias == 'ocultar'){
 	<a onclick="inserir()" type="button" class="btn btn-primary"><span class="fa fa-plus"></span> Frequencia</a>
 
 	<li class="dropdown head-dpdn2" style="display: inline-block;">		
-			<a href="#" data-toggle="dropdown"  class="btn btn-danger dropdown-toggle" id="btn-deletar" style="display:none"><span class="fa fa-trash-o"></span> Deletar</a>
+			<a href="#" data-toggle="dropdown"  class="btn btn-danger dropdown-toggle" id="btn-deletar" style="display:none"><span class="fa fa-trash-o"></span> Excluir</a>
 
 			<ul class="dropdown-menu">
 			<li>

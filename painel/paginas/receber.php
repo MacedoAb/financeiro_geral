@@ -15,7 +15,7 @@ if(@$receber == 'ocultar'){
 			<a onclick="inserir()" type="button" class="btn btn-primary"><span class="fa fa-plus"></span> Receber</a>
 
 			<li class="dropdown head-dpdn2" style="display: inline-block;">		
-				<a href="#" data-toggle="dropdown"  class="btn btn-danger dropdown-toggle" id="btn-deletar" style="display:none"><span class="fa fa-trash-o"></span> Deletar</a>
+				<a href="#" data-toggle="dropdown"  class="btn btn-danger dropdown-toggle" id="btn-deletar" style="display:none"><span class="fa fa-trash-o"></span> Excluir</a>
 
 				<ul class="dropdown-menu">
 					<li>
@@ -58,7 +58,7 @@ if(@$receber == 'ocultar'){
 		</div>
 
 		<div class="col-md-3 esc" style="margin-top: 5px">
-			<span style="font-size: 14px; border:1px solid #6092a8; padding:5px; ">
+			<span style="font-size: 14px; border:2px solid #6092a8; padding:5px; ">
 				<a href="#" onclick="trocarData('mes')">Mês</a> / 
 				<a href="#" onclick="trocarData('hoje')">Hoje</a> / 
 				<a href="#" onclick="trocarData('ontem')">Ontem</a> /
@@ -426,7 +426,7 @@ if(@$receber == 'ocultar'){
 
 							<div class="col-md-6">
 								<div class="form-group"> 
-									<label>Forma PGTO</label> 
+									<label>Forma Pgto</label> 
 									<select class="form-control" name="saida-baixar" id="saida-baixar" required onchange="calcularTaxa()">	
 										<?php 
 										$query = $pdo->query("SELECT * FROM formas_pgto order by id asc");
@@ -474,7 +474,7 @@ if(@$receber == 'ocultar'){
 
 							<div class="col-md-3">
 								<div class="mb-3">
-									<label for="exampleFormControlInput1" class="form-label">Taxa PGTO</label>
+									<label for="exampleFormControlInput1" class="form-label">Taxa Pgto</label>
 									<input onkeyup="totalizar()" type="text" class="form-control" name="valor-taxa"  id="valor-taxa" placeholder="" value="" >
 								</div>
 							</div>
