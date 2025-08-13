@@ -513,7 +513,7 @@ function mostrarResiduos(id){
 		data: {id},
 		dataType: "html",
 
-		success:function(result){
+		success:function(result){o
 			$("#listar-residuos").html(result);
 		}
 	});
